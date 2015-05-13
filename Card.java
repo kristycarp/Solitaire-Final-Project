@@ -15,6 +15,8 @@ public class Card
    public static final int CARD_HEIGHT = 90;
    public static enum Suit {Spades, Clubs, Hearts, Diamonds}
    private BufferedImage suitGraphic;
+   public static final int SMALL_SUIT_WIDTH = CARD_WIDTH / 4;
+   public static final int SMALL_SUIT_HEIGHT = SMALL_SUIT_WIDTH; //just how the dimensions worked out
    
    public Card(Suit s, int v, int x, int y)
    {
@@ -90,5 +92,39 @@ public class Card
    public String toString()
    {
       return (value + " of " + suit);
+   }
+   
+   public void draw(Graphics g)
+   {
+      g.setColor(Color.BLACK);
+      g.drawRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+      g.setColor(Color.WHITE);
+      g.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+      g.drawImage(suitGraphic, x, y, null);
+      g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
+      g.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
+      g.setColor(color);
+      String valueStr = "";
+      if (value == 1)
+      {
+         valueStr = "   A";
+      }
+      else if (value == 11)
+      {
+         valueStr = " J ";
+      }
+      else if (value == 12)
+      {
+         valueStr = " Q ";
+      }
+      else if (value == 13)
+      {
+         valueStr = " K ";
+      }
+      else
+      {
+         valueStr += value;
+      }
+      g.drawString(valueStr, x, y + 50);
    }
 }

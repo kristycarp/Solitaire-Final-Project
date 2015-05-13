@@ -23,6 +23,7 @@ public class Solitaire
       
       DrawingPanel panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
       Graphics g = panel.getGraphics();
+      //panel.setBackground(Color.BLUE);
 
       Pile[] pileArray = new Pile[7];
       for (int ii = 1; ii <= 7; ii++)
@@ -54,6 +55,9 @@ public class Solitaire
       
       CardListener cListener = new CardListener();
       panel.addMouseListener(cListener);
+      
+      Card testCard = new Card();
+      testCard.draw(g);
    }
    
    public static Pile makePile(int i)
