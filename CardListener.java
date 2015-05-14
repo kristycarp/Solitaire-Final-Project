@@ -13,5 +13,6 @@ public class CardListener extends MouseInputAdapter
    public void mouseClicked(MouseEvent event)
    {
       firstClickMade = !firstClickMade;
+      System.out.println("you clicked on a card :):):)");
    }
 }

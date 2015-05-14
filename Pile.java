@@ -7,7 +7,8 @@ public class Pile extends JPanel
    protected int x;
    protected int y;
    protected Stack<Card> seeableCardList;
-   private ArrayList<Card> unseenCardList;
+   public ArrayList<Card> unseenCardList;
+   private final int SPACING = 10;
    
    public Pile(int x, int y)
    {
@@ -67,6 +68,8 @@ public class Pile extends JPanel
    
    public void dealCard(Card c)
    {
+      c.setX(x);
+      c.setY(y + (unseenCardList.size() * (SPACING + Card.SMALL_SUIT_HEIGHT)));
       unseenCardList.add(c);
    }
    

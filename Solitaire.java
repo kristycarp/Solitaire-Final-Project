@@ -36,6 +36,8 @@ public class Solitaire
       {
          makeFoundation(jj).draw(g);
       }
+      FoundationListener fListener = new FoundationListener(); 
+      panel.addMouseListener(fListener);
       
       //frame.setVisible(true);
       
@@ -43,21 +45,29 @@ public class Solitaire
       Deck deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
       deck.draw(g);
       
+      for (Pile p : pileArray)
+      {
+         for (Card c : p.unseenCardList)
+         {
+            c.draw(g);
+         }
+         p.unseenCardList.get(p.unseenCardList.size() - 1).flip();
+         p.unseenCardList.get(p.unseenCardList.size() - 1).draw(g);
+      }
+      
       //for testing only
-      for (int ii = 0; ii < 7; ii++)
+      /**for (int ii = 0; ii < 7; ii++)
       {
          System.out.println("Pile " + (ii + 1) + ": " + pileArray[ii].toString());
       }
-      System.out.println("Deck: " + deck.toString());
+      System.out.println("Deck: " + deck.toString());**/
       
-      FoundationListener fListener = new FoundationListener(); 
-      panel.addMouseListener(fListener);
+      //CardListener cListener = new CardListener();
+     // panel.addMouseListener(cListener);
       
-      CardListener cListener = new CardListener();
-      panel.addMouseListener(cListener);
-      
-      Card testCard = new Card();
-      testCard.draw(g);
+      //for testing only
+      /**Card testCard = new Card(Card.Suit.Diamonds, 2, 500, 500);
+      testCard.draw(g);**/
    }
    
    public static Pile makePile(int i)

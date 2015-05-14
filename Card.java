@@ -17,6 +17,8 @@ public class Card
    private BufferedImage suitGraphic;
    public static final int SMALL_SUIT_WIDTH = CARD_WIDTH / 4;
    public static final int SMALL_SUIT_HEIGHT = SMALL_SUIT_WIDTH; //just how the dimensions worked out
+   private BufferedImage backside;
+   private boolean faceUp;
    
    public Card(Suit s, int v, int x, int y)
    {
@@ -52,6 +54,17 @@ public class Card
       {
          System.out.println("Problem loading suit image");
       }
+      
+      try
+      {
+         backside = ImageIO.read(new File("cardback1.png"));
+      }
+      catch (IOException e)
+      {
+         System.out.println("Problem loading card back image");
+      }
+      
+      faceUp = false;
    }
    
    public Card()
@@ -96,35 +109,47 @@ public class Card
    
    public void draw(Graphics g)
    {
-      g.setColor(Color.BLACK);
-      g.drawRect(x, y, CARD_WIDTH, CARD_HEIGHT);
-      g.setColor(Color.WHITE);
-      g.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
-      g.drawImage(suitGraphic, x, y, null);
-      g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
-      g.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
-      g.setColor(color);
-      String valueStr = "";
-      if (value == 1)
+      if (faceUp)
       {
-         valueStr = "   A";
-      }
-      else if (value == 11)
-      {
-         valueStr = " J ";
-      }
-      else if (value == 12)
-      {
-         valueStr = " Q ";
-      }
-      else if (value == 13)
-      {
-         valueStr = " K ";
+         g.setColor(Color.WHITE);
+         g.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+         g.drawImage(suitGraphic, x, y, null);
+         g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
+         g.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
+         g.setColor(color);
+         String valueStr = "";
+         if (value == 1)
+         {
+            valueStr = "A";
+         }
+         else if (value == 11)
+         {
+            valueStr = "J";
+         }
+         else if (value == 12)
+         {
+            valueStr = "Q";
+         }
+         else if (value == 13)
+         {
+            valueStr = "K";
+         }
+         else
+         {
+            valueStr += value;
+         }
+         g.drawString(valueStr, x + 23, y + 50);
       }
       else
       {
-         valueStr += value;
+         g.drawImage(backside, x, y, null);
       }
-      g.drawString(valueStr, x, y + 50);
+      g.setColor(Color.BLACK);
+      g.drawRect(x, y, CARD_WIDTH, CARD_HEIGHT);
+   }
+   
+   public void flip()
+   {
+      faceUp = !faceUp;
    }
 }
