@@ -19,6 +19,7 @@ public class Card
    public static final int SMALL_SUIT_HEIGHT = SMALL_SUIT_WIDTH; //just how the dimensions worked out
    private BufferedImage backside;
    private boolean faceUp;
+   private boolean selected;
    
    public Card(Suit s, int v, int x, int y)
    {
@@ -65,6 +66,7 @@ public class Card
       }
       
       faceUp = false;
+      selected = false;
    }
    
    public Card()
@@ -111,7 +113,10 @@ public class Card
    {
       if (faceUp)
       {
-         g.setColor(Color.WHITE);
+         if (selected)
+            g.setColor(Color.BLUE);
+         else
+            g.setColor(Color.WHITE);
          g.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
          g.drawImage(suitGraphic, x, y, null);
          g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
@@ -151,5 +156,37 @@ public class Card
    public void flip()
    {
       faceUp = !faceUp;
+   }
+   
+   public void select()
+   {
+      selected = true;
+   }
+   
+   public void unselect()
+   {
+      selected = false;
+   }
+   
+   public boolean isHit(int x, int y)
+   {
+      return (x >= this.x && x <= this.x + CARD_WIDTH && y >= this.y && y <= this.y + CARD_HEIGHT);
+   }
+   
+   public boolean isFaceUp()
+   {
+      return faceUp;
+   }
+   
+   public String fullToString()
+   {
+      String string = toString();
+      string += ", face up: " + faceUp + ", location: (" + x + ", " + y + ")";
+      return string;
+   }
+   
+   public boolean isSelected()
+   {
+      return selected;
    }
 }

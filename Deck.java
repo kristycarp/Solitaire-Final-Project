@@ -13,15 +13,15 @@ public class Deck
    public Deck(ArrayList<Card> deck, int x, int y)
    {
       fullDeck = deck;
-      for (int ii = 0; ii < fullDeck.size(); ii++)
+      holding = new ArrayList<Card>();
+      undealt = new Stack<Card>();
+      for (int ii = fullDeck.size() - 1; ii >= 0; ii--)
       {
          Card c = fullDeck.get(ii);
          c.setX(x);
          c.setY(y);
-         fullDeck.set(ii, c);
+         undealt.push(c);  
       }
-      holding = new ArrayList<Card>();
-      undealt = new Stack<Card>();
       dealtUnseen = new Stack<Card>();
       undealtX = x;
       undealtY = y;
@@ -71,8 +71,15 @@ public class Deck
    
    public void draw(Graphics g)
    {
-      g.setColor(Color.BLACK);
-      g.fillRect(undealtX, undealtY, Card.CARD_WIDTH, Card.CARD_HEIGHT);
+      if (undealt.empty())
+      {
+         g.setColor(Color.BLACK);
+         g.fillRect(undealtX, undealtY, Card.CARD_WIDTH, Card.CARD_HEIGHT);
+      }
+      else
+      {
+         undealt.peek().draw(g);
+      }
    }
    
    public String toString()
