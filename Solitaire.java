@@ -63,7 +63,7 @@ public class Solitaire
       
       ArrayList<Card> deck52 = tempGenerateAndShuffle();
       ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
-      CardListener cListener = new CardListener(permaDeck, panel, foundationArray);
+      CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray);
       panel.addMouseListener(cListener);
       deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
       //deck.draw(g);
@@ -135,6 +135,15 @@ public class Solitaire
       {
          realDeck.add(c);
       }
+      
+      //for rigging purposes
+      for (int asdf = 0; asdf < 52; asdf++)
+      {
+         realDeck.set(asdf, new Card());
+      }
+      realDeck.set(27, new Card(Card.Suit.Spades, 2, 0, 0));
+      realDeck.set(26, new Card(Card.Suit.Spades, 3, 0, 0));
+
       return realDeck;
    }
    

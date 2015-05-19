@@ -10,13 +10,15 @@ public class CardListener extends MouseInputAdapter
    private Graphics g;
    private static Card selectedCard;
    private Foundation[] foundations;
+   private Pile[] piles;
    
-   public CardListener(ArrayList<Card> allCards, DrawingPanel p, Foundation[] foundationArray)
+   public CardListener(ArrayList<Card> allCards, DrawingPanel p, Foundation[] foundationArray, Pile[] pileArray)
    {
       somethingSelected = false;
       cards = allCards;
       g = p.getGraphics();
       foundations = foundationArray;
+      piles = pileArray;
    }
    
    public void mouseClicked(MouseEvent event)
@@ -108,6 +110,19 @@ public class CardListener extends MouseInputAdapter
             Solitaire.drawScreen();
             //selectedCard = null;
             }
+      }
+      for (Pile p : piles)
+      {
+         if (p.isEmpty() && p.isHit(event.getX(), event.getY()) && somethingSelected && p.canAddCard(selectedCard))
+         {
+            Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
+            pileToLoseCard.removeLastCard();
+            p.addCard(selectedCard);
+            pileToLoseCard.flipLastCard();
+            somethingSelected = false;
+            selectedCard.unselect();
+            Solitaire.drawScreen();
+         }
       }
    }
 }

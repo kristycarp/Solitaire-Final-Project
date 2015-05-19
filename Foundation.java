@@ -39,12 +39,13 @@ public class Foundation extends Pile //referred to as DonePile in design doc
          //System.out.println("I added an ace");
          //return true;
       }
-      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.get(cardList.size() - 1).getValue())
+      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() == cardList.get(cardList.size() - 1).getValue() + 1)
       {
          c.setLocation(Card.Location.FOUNDATION);
          c.setX(x);
          c.setY(y);
          cardList.add(c);
+         //System.out.println("I added " + c.fullToString());
          //return true;
       }
       //return false;
@@ -56,7 +57,7 @@ public class Foundation extends Pile //referred to as DonePile in design doc
       {
          return true;
       }
-      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.get(cardList.size() - 1).getValue())
+      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() == cardList.get(cardList.size() - 1).getValue() + 1)
       {
          return true;
       }
