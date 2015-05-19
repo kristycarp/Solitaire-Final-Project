@@ -3,13 +3,11 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.*;
 
-public class Card
+public class Card extends Clickable
 {
    //private boolean isClicked;
    private Suit suit;
    private int value;
-   private int x;
-   private int y;
    private Color color;
    public static final int CARD_WIDTH = 60;
    public static final int CARD_HEIGHT = 90;
@@ -20,6 +18,8 @@ public class Card
    private BufferedImage backside;
    private boolean faceUp;
    private boolean selected;
+   public static enum Location {DECK, PILE, FOUNDATION}
+   private Location location;
    
    public Card(Suit s, int v, int x, int y)
    {
@@ -99,6 +99,11 @@ public class Card
       this.x = x;
    }
    
+   public int getX()
+   {
+      return x;
+   }
+   
    public void setY(int y)
    {
       this.y = y;
@@ -168,11 +173,6 @@ public class Card
       selected = false;
    }
    
-   public boolean isHit(int x, int y)
-   {
-      return (x >= this.x && x <= this.x + CARD_WIDTH && y >= this.y && y <= this.y + CARD_HEIGHT);
-   }
-   
    public boolean isFaceUp()
    {
       return faceUp;
@@ -188,5 +188,15 @@ public class Card
    public boolean isSelected()
    {
       return selected;
+   }
+   
+   public void setLocation(Location l)
+   {
+      location = l;
+   }
+   
+   public Location getLocation()
+   {
+      return location;
    }
 }

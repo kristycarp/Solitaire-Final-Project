@@ -20,6 +20,7 @@ public class Deck
          Card c = fullDeck.get(ii);
          c.setX(x);
          c.setY(y);
+         c.setLocation(Card.Location.DECK);
          undealt.push(c);  
       }
       dealtUnseen = new Stack<Card>();

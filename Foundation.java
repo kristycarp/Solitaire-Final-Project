@@ -1,12 +1,15 @@
 import java.util.*;
+import java.awt.*;
 
 public class Foundation extends Pile //referred to as DonePile in design doc
 {
    private Card.Suit suit;
+   private Stack<Card> cardList;
    
    public Foundation(int x, int y)
    {
       super(x, y);
+      cardList = new Stack<Card>();
    }
    
    public Foundation()
@@ -28,12 +31,14 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    {
       if (c.getValue() == 1 && cardList.empty())
       {
+         c.setLocation(Card.Location.FOUNDATION);
          cardList.push(c);
          suit = c.getSuit();
          return true;
       }
       else if (!cardList.empty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.peek().getValue())
       {
+         c.setLocation(Card.Location.FOUNDATION);
          cardList.push(c);
          return true;
       }
