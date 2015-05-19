@@ -4,12 +4,12 @@ import java.awt.*;
 public class Foundation extends Pile //referred to as DonePile in design doc
 {
    private Card.Suit suit;
-   private Stack<Card> cardList;
+   private ArrayList<Card> cardList;
    
    public Foundation(int x, int y)
    {
       super(x, y);
-      cardList = new Stack<Card>();
+      cardList = new ArrayList<Card>();
    }
    
    public Foundation()
@@ -21,25 +21,43 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    //if a King is added then all the other cards have been added correctly
    public boolean isComplete()
    {
-      if (cardList.peek().getValue() == 13)
+      if (cardList.get(cardList.size() - 1).getValue() == 13)
          return true;
       return false;
    }
    
    //returns true if successful add, false if unsuccessful
-   public boolean addCard(Card c)
+   public void addCard(Card c)
    {
-      if (c.getValue() == 1 && cardList.empty())
+      if (c.getValue() == 1 && cardList.isEmpty())
       {
          c.setLocation(Card.Location.FOUNDATION);
-         cardList.push(c);
+         c.setX(x);
+         c.setY(y);
+         cardList.add(c);
          suit = c.getSuit();
+         //System.out.println("I added an ace");
+         //return true;
+      }
+      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.get(cardList.size() - 1).getValue())
+      {
+         c.setLocation(Card.Location.FOUNDATION);
+         c.setX(x);
+         c.setY(y);
+         cardList.add(c);
+         //return true;
+      }
+      //return false;
+   }
+   
+   public boolean canAddCard(Card c)
+   {
+      if (c.getValue() == 1 && cardList.isEmpty())
+      {
          return true;
       }
-      else if (!cardList.empty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.peek().getValue())
+      else if (!cardList.isEmpty() && c.getSuit().equals(suit) && c.getValue() + 1 == cardList.get(cardList.size() - 1).getValue())
       {
-         c.setLocation(Card.Location.FOUNDATION);
-         cardList.push(c);
          return true;
       }
       return false;
@@ -49,13 +67,18 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    //something to remove
    public Card removeCard()
    {
-      if (!cardList.empty())
+      if (!cardList.isEmpty())
       {
-         return cardList.pop();
+         return cardList.remove(cardList.size() - 1);
       }
       else
       {
          throw new IndexOutOfBoundsException();
       }
+   }
+   
+   public ArrayList<Card> getCards()
+   {
+      return cardList;
    }
 }

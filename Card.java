@@ -119,12 +119,14 @@ public class Card extends Clickable
       if (faceUp)
       {
          if (selected)
+         {
             g.setColor(Color.BLUE);
+         }
          else
             g.setColor(Color.WHITE);
          g.fillRect(x, y, CARD_WIDTH, CARD_HEIGHT);
-         g.drawImage(suitGraphic, x, y, null);
-         g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
+         g.drawImage(suitGraphic, x + CARD_WIDTH - SMALL_SUIT_WIDTH, y, null);
+         g.drawImage(suitGraphic, x, y + CARD_HEIGHT - SMALL_SUIT_HEIGHT, null);
          g.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
          g.setColor(color);
          String valueStr = "";
@@ -149,6 +151,10 @@ public class Card extends Clickable
             valueStr += value;
          }
          g.drawString(valueStr, x + 23, y + 50);
+         g.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
+         g.drawString(valueStr, x + 3, y + 15);
+         //g.drawString(valueStr, x + CARD_WIDTH - 15, y + CARD_HEIGHT - 3);
+         //System.out.println("I drew " + toString() + ", selected: " + selected + ", location: " + location);
       }
       else
       {
@@ -170,7 +176,9 @@ public class Card extends Clickable
    
    public void unselect()
    {
+      //System.out.println(fullToString());
       selected = false;
+      //System.out.println(fullToString());
    }
    
    public boolean isFaceUp()
@@ -181,7 +189,7 @@ public class Card extends Clickable
    public String fullToString()
    {
       String string = toString();
-      string += ", face up: " + faceUp + ", location: (" + x + ", " + y + ")";
+      string += ", face up: " + faceUp + ", location: (" + x + ", " + y + "), selected: " + selected;
       return string;
    }
    

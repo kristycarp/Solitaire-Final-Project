@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.*;
 import java.io.*;
 
-///UNIT TESTING AAAAh
+
 public class Solitaire
 {
    public static final int PANEL_WIDTH = 800;
@@ -63,7 +63,7 @@ public class Solitaire
       
       ArrayList<Card> deck52 = tempGenerateAndShuffle();
       ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
-      CardListener cListener = new CardListener(permaDeck, panel);
+      CardListener cListener = new CardListener(permaDeck, panel, foundationArray);
       panel.addMouseListener(cListener);
       deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
       //deck.draw(g);
@@ -164,12 +164,13 @@ public class Solitaire
             return p;
          }
       }
-      System.out.println("something went wrong");
+      System.out.println("no pile was hit");
       return null; 
    }
    
    public static void drawScreen()
    {
+      g.setColor(Color.WHITE);
       g.drawRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
       g.drawImage(background, 0, 0, null);
       for (Pile p : pileArray)
@@ -189,6 +190,10 @@ public class Solitaire
       for (Foundation f : foundationArray)
       {
          f.draw(g);
+         for (Card c : f.getCards())
+         {
+            c.draw(g);
+         }
       }
    }
 }

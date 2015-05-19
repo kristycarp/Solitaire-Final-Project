@@ -43,7 +43,7 @@ public class Pile extends Clickable
       this.y = y;
    }
    
-   public boolean addCard(Card c)
+   public void addCard(Card c)
    {
       if (seeableCardList.isEmpty() && c.getValue() == 13) //king on empty piile
       {
@@ -51,7 +51,7 @@ public class Pile extends Clickable
          c.setX(x);
          c.setY(y);
          seeableCardList.add(c);
-         return true;
+         //return true;
       }
       else if ((seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.RED) && c.getColor().equals(Color.BLACK)) || (seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.BLACK) && c.getColor().equals(Color.RED)) && seeableCardList.get(seeableCardList.size() - 1).getValue() == c.getValue() + 1)
       {
@@ -59,6 +59,19 @@ public class Pile extends Clickable
          c.setX(x);
          c.setY(y + (SPACING + Card.SMALL_SUIT_HEIGHT) * (seeableCardList.size() + unseenCardList.size()));
          seeableCardList.add(c);
+         //return true;
+      }
+      //return false;
+   }
+   
+   public boolean canAddCard(Card c)
+   {
+      if (seeableCardList.isEmpty() && c.getValue() == 13) //king on empty piile
+      {
+         return true;
+      }
+      else if ((seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.RED) && c.getColor().equals(Color.BLACK)) || (seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.BLACK) && c.getColor().equals(Color.RED)) && seeableCardList.get(seeableCardList.size() - 1).getValue() == c.getValue() + 1)
+      {
          return true;
       }
       return false;
@@ -108,11 +121,11 @@ public class Pile extends Clickable
          //System.out.println("seen after: " + seeableCardList.toString());
          //System.out.println(c.toString());
       }
-      else
+      /**else
       {
          System.out.println("don't call this method you fool");
          //System.out.println(seeableCardList.toString());
-      }
+      }**/
    }
    
    /**public ArrayList<Card> allCardsInPile()
