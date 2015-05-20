@@ -137,12 +137,13 @@ public class Solitaire
       }
       
       //for rigging purposes
-      for (int asdf = 0; asdf < 52; asdf++)
+      /**for (int asdf = 0; asdf < 52; asdf++)
       {
          realDeck.set(asdf, new Card());
       }
       realDeck.set(27, new Card(Card.Suit.Spades, 2, 0, 0));
       realDeck.set(26, new Card(Card.Suit.Spades, 3, 0, 0));
+      realDeck.set(24, new Card(Card.Suit.Hearts, 4, 0, 0));**/
 
       return realDeck;
    }
@@ -204,5 +205,18 @@ public class Solitaire
             c.draw(g);
          }
       }
+   }
+   
+   public static Foundation whichFoundationIsHit(int y)
+   {
+      for (Foundation f : foundationArray)
+      {
+         if (y >= f.getY() && y <= f.getY() + Card.CARD_HEIGHT)
+         {
+            return f;
+         }
+      }
+      System.out.println("no foundation was hit");
+      return null; 
    }
 }

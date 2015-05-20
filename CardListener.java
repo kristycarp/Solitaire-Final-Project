@@ -24,16 +24,17 @@ public class CardListener extends MouseInputAdapter
    public void mouseClicked(MouseEvent event)
    {
       //System.out.println("you clicked");
+      //Collections.sort(cards); 
       for (Card c : cards)
       {
-         if (c.isFaceUp() && c.isHit(event.getX(), event.getY()))
+         if (c.isFaceUp() && c.isTopAt(event.getX(), event.getY()))
          {
             //System.out.println("you clicked " + c.toString());
             if (!c.isSelected())
             {
                if (somethingSelected)
                {
-                  if (c.getLocation().equals(Card.Location.PILE))
+                  if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.PILE))
                   {
                      //System.out.println(selectedCard.toString() + " has been selected first");
                      Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
@@ -60,6 +61,20 @@ public class CardListener extends MouseInputAdapter
                         //selectedCard.draw(g);
                         //c.draw(g);
                         //System.out.println("I recognize that the right things have happened. i tried.");
+                     }
+                  }
+                  else if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.FOUNDATION))
+                  {
+                     Foundation foundationToLoseCard = Solitaire.whichFoundationIsHit(selectedCard.getY());
+                     Pile pileToGainCard = Solitaire.whichPileIsHit(event.getX());
+                     if (pileToGainCard.canAddCard(selectedCard) && foundationToLoseCard != null)
+                     {
+                        foundationToLoseCard.removeCard();
+                        pileToGainCard.addCard(selectedCard);
+                        somethingSelected = false;
+                        selectedCard.unselect();
+                        selectedCard = null;
+                        Solitaire.drawScreen();
                      }
                   }
                   /**else if (c.getLocation().equals(Card.Location.FOUNDATION))
@@ -102,6 +117,10 @@ public class CardListener extends MouseInputAdapter
          if (f.isHit(event.getX(), event.getY()) && somethingSelected && f.canAddCard(selectedCard))
          {
             Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
+            //hi hi future kristy! there's an exception that's thrown around
+            //here when pileToLoseCard is null
+            //so poke around and figure out the case you're missing k?
+            //thanks!
             pileToLoseCard.removeLastCard();
             f.addCard(selectedCard);
             pileToLoseCard.flipLastCard();
@@ -123,6 +142,6 @@ public class CardListener extends MouseInputAdapter
             selectedCard.unselect();
             Solitaire.drawScreen();
          }
-      }
+      }  
    }
 }

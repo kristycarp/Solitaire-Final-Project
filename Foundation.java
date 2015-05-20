@@ -82,4 +82,9 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    {
       return cardList;
    }
+   
+   public int getY()
+   {
+      return y;
+   }
 }

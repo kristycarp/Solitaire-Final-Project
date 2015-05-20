@@ -2,8 +2,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.*;
+import java.util.*;
 
-public class Card extends Clickable
+public class Card extends Clickable //implements Comparable
 {
    //private boolean isClicked;
    private Suit suit;
@@ -109,6 +110,11 @@ public class Card extends Clickable
       this.y = y;
    }
    
+   public int getY()
+   {
+      return y;
+   }
+   
    public String toString()
    {
       return (value + " of " + suit);
@@ -172,6 +178,7 @@ public class Card extends Clickable
    public void select()
    {
       selected = true;
+      //System.out.println("I selected " + fullToString());
    }
    
    public void unselect()
@@ -206,5 +213,84 @@ public class Card extends Clickable
    public Location getLocation()
    {
       return location;
+   }
+   
+   /**public int compareTo(Object o)
+   {
+      if (o instanceof Card)
+      {
+         Card c = (Card) o;
+         if (getLocation().equals(Location.PILE))
+         {
+            if (c.getLocation().equals(Location.PILE))
+            {
+               if (getX() == c.getX()) //in same pile
+               {
+                  return (c.getValue() - getValue());
+               }
+               return 0; //doesn't matter if they're in different piles
+            }
+            return 0; //doesn't matter if they're in different places
+         }
+         else if (getLocation().equals(Location.FOUNDATION))
+         {
+            if (c.getLocation().equals(Location.FOUNDATION))
+            {
+               if (getY() == c.getY()) //in same foundation
+               {
+                  return (c.getValue() - getValue());
+               }
+               return 0; //doesn't matter if they're in different foundations
+            }
+            return 0; //doesn't matter if they're in different places
+         }
+         else //this card in deck
+         {
+            //THIS WILL MATTER AT SOME POINT
+            //BUT I'M TOO LAZY TO DO IT NOW
+            return 0;
+         }
+      }
+      else
+      {
+         throw new IllegalArgumentException();
+      }
+   }**/
+   
+   public boolean isTopAt(int x, int y)
+   {
+      if (isHit(x, y))
+      {
+         if (getLocation().equals(Location.PILE))
+         {
+            Pile p = Solitaire.whichPileIsHit(x);
+            ArrayList<Card> seeable = p.getSeeable();
+            Card top = null;
+            for (int ii = seeable.size() - 1; ii >= 0; ii--)
+            {
+               if (seeable.get(ii).isHit(x, y))
+               {
+                  top = seeable.get(ii);
+                  break;
+               }
+            }
+            return top.equals(this);
+         }
+         else if (getLocation().equals(Location.FOUNDATION))
+         {
+            Foundation f = Solitaire.whichFoundationIsHit(y);
+            ArrayList<Card> cards = f.getCards();
+            return cards.get(cards.size() - 1).equals(this);
+         }
+         else //deck
+         {
+            //FIX THIS WHEN DECK IMPLEMENTED
+            return true;
+         }
+      }
+      else
+      {
+         return false;
+      }
    }
 }
