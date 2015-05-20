@@ -116,19 +116,25 @@ public class CardListener extends MouseInputAdapter
       {
          if (f.isHit(event.getX(), event.getY()) && somethingSelected && f.canAddCard(selectedCard))
          {
-            Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
-            //hi hi future kristy! there's an exception that's thrown around
-            //here when pileToLoseCard is null
-            //so poke around and figure out the case you're missing k?
-            //thanks!
-            pileToLoseCard.removeLastCard();
-            f.addCard(selectedCard);
-            pileToLoseCard.flipLastCard();
+            if (selectedCard.getLocation().equals(Card.Location.PILE))
+            {
+               Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
+               pileToLoseCard.removeLastCard();
+               f.addCard(selectedCard);
+               pileToLoseCard.flipLastCard();
+            //selectedCard = null;
+            }
+            else if (selectedCard.getLocation().equals(Card.Location.FOUNDATION))
+            {
+               Foundation foundationToLoseCard = Solitaire.whichFoundationIsHit(selectedCard.getY());
+               foundationToLoseCard.removeCard();
+               f.addCard(selectedCard);
+            }
+            //if you're adding an else case for the deck make sure this stuff still applies
             somethingSelected = false;
             selectedCard.unselect();
             Solitaire.drawScreen();
-            //selectedCard = null;
-            }
+         }
       }
       for (Pile p : piles)
       {

@@ -70,7 +70,7 @@ public class Pile extends Clickable
       {
          return true;
       }
-      else if ((seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.RED) && c.getColor().equals(Color.BLACK)) || (seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.BLACK) && c.getColor().equals(Color.RED)) && seeableCardList.get(seeableCardList.size() - 1).getValue() == c.getValue() + 1)
+      else if (((seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.RED) && c.getColor().equals(Color.BLACK)) || (seeableCardList.get(seeableCardList.size() - 1).getColor().equals(Color.BLACK) && c.getColor().equals(Color.RED))) && seeableCardList.get(seeableCardList.size() - 1).getValue() == c.getValue() + 1)
       {
          return true;
       }
