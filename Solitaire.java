@@ -21,15 +21,6 @@ public class Solitaire
    
    public static void main(String[] args)
    {
-      /**JFrame frame = new JFrame();
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.setTitle("Solitaire");
-      frame.setSize(new Dimension(800, 600));
-      
-      JPanel panel = new JPanel();
-      panel.setBackground(Color.BLUE);
-      frame.add(panel);
-      panel.setLayout(new GridLayout());**/
       
       DrawingPanel panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
       g = panel.getGraphics();
@@ -64,9 +55,9 @@ public class Solitaire
       
       ArrayList<Card> deck52 = tempGenerateAndShuffle();
       ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
-      CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray);
-      panel.addMouseListener(cListener);
       deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
+      CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray, deck);
+      panel.addMouseListener(cListener);
       //deck.draw(g);
       
       for (Pile p : pileArray)
@@ -224,6 +215,11 @@ public class Solitaire
       }
       System.out.println("no foundation was hit");
       return null; 
+   }
+   
+   public static Deck getDeck()
+   {
+      return deck;
    }
    
 }

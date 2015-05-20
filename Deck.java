@@ -59,14 +59,15 @@ public class Deck
                {
                   Card movingCard = undealt.pop();
                   movingCard.setY(dealtY + (kk - 1) * Card.SMALL_SUIT_HEIGHT);
+                  movingCard.flip();
                   dealt.add(movingCard);
                }
             }
          }
          else
          {
-            int nCardsLeft = dealt.size(); //to avoid diminishing size
-            for (int a = nCardsLeft; a <= 0; a--)
+            int nCardsLeft = dealt.size() - 1; //to avoid diminishing size
+            for (int a = nCardsLeft; a >= 0; a--)
             {
                Card movingCard = dealt.remove(a);
                movingCard.setY(undealtY);
@@ -102,5 +103,19 @@ public class Deck
       }
       
       return string;
+   }
+   
+   public ArrayList<Card> getDealt()
+   {
+      return dealt;
+   }
+   
+   public void removeTop()
+   {
+      if (!dealt.isEmpty())
+      {
+         Card c = dealt.remove(dealt.size() - 1);
+         fullDeck.remove(c);
+      }
    }
 }

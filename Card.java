@@ -284,8 +284,23 @@ public class Card extends Clickable //implements Comparable
          }
          else //deck
          {
-            //FIX THIS WHEN DECK IMPLEMENTED
-            return true;
+            if (faceUp)
+            {
+               Deck deck = Solitaire.getDeck();
+               ArrayList dealt = deck.getDealt();
+               if (dealt.get(dealt.size() - 1).equals(this))
+               {
+                  return true;
+               }
+               else
+               {
+                  return false;
+               }
+            }
+            else
+            {
+               return false;
+            }
          }
       }
       else
