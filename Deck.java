@@ -4,28 +4,30 @@ import java.awt.*;
 public class Deck
 {
    private ArrayList<Card> fullDeck;
-   private ArrayList<Card> holding;
+   //private ArrayList<Card> holding;
    private Stack<Card> undealt;
-   private Stack<Card> dealtUnseen;
-   private int undealtX;
+   private ArrayList<Card> dealt;
+   private int x;
    private int undealtY;
+   private int dealtY;
+   private static final int SPACING = Card.CARD_HEIGHT + 20;
    
-   public Deck(ArrayList<Card> deck, int x, int y)
+   public Deck(ArrayList<Card> deck, int x, int undealtY)
    {
       fullDeck = deck;
-      holding = new ArrayList<Card>();
       undealt = new Stack<Card>();
       for (int ii = fullDeck.size() - 1; ii >= 0; ii--)
       {
          Card c = fullDeck.get(ii);
          c.setX(x);
-         c.setY(y);
+         c.setY(undealtY);
          c.setLocation(Card.Location.DECK);
          undealt.push(c);  
       }
-      dealtUnseen = new Stack<Card>();
-      undealtX = x;
-      undealtY = y;
+      dealt = new ArrayList<Card>();
+      this.x = x;
+      this.undealtY = undealtY;
+      dealtY = undealtY + SPACING;
    }
    
    public void deal()
@@ -34,15 +36,20 @@ public class Deck
       {
          if (undealt.size() != 0)
          {
-            for (int ii = 0; ii < holding.size(); ii++)
+            for (int ii = 0; ii < dealt.size(); ii++)
             {
-               dealtUnseen.push(holding.get(ii));
+               Card movingCard = dealt.get(ii);
+               movingCard.setY(dealtY);
+               dealt.set(ii, movingCard);
             }
             if (undealt.size() > 2)
             {
                for (int jj = 1; jj <= 3; jj++)
                {
-                  holding.add(undealt.pop());
+                  Card movingCard = undealt.pop();
+                  movingCard.setY(dealtY + (jj - 1) * Card.SMALL_SUIT_HEIGHT);
+                  movingCard.flip();
+                  dealt.add(movingCard);
                }
             }
             else
@@ -50,36 +57,39 @@ public class Deck
                int undealtCards = undealt.size();
                for (int kk = 0; kk < undealtCards; kk++)
                {
-                  holding.add(undealt.pop());
+                  Card movingCard = undealt.pop();
+                  movingCard.setY(dealtY + (kk - 1) * Card.SMALL_SUIT_HEIGHT);
+                  dealt.add(movingCard);
                }
             }
          }
          else
          {
-            int nCardsLeft = dealtUnseen.size(); //to avoid diminishing size
-            for (int a = 0; a < nCardsLeft; a++)
+            int nCardsLeft = dealt.size(); //to avoid diminishing size
+            for (int a = nCardsLeft; a <= 0; a--)
             {
-               undealt.push(dealtUnseen.pop());
+               Card movingCard = dealt.remove(a);
+               movingCard.setY(undealtY);
+               movingCard.flip();
+               undealt.push(movingCard);
             }
          }
+         Solitaire.drawScreen();
       }
    }
    
-   public boolean holdingHasStuff()
+   /**public boolean holdingHasStuff()
    {
       return (holding.size() != 0);
-   }
+   }**/
    
    public void draw(Graphics g)
    {
-      if (undealt.empty())
+      g.setColor(Color.BLACK);
+      g.fillRect(x, undealtY, Card.CARD_WIDTH, Card.CARD_HEIGHT);
+      for (Card c : fullDeck)
       {
-         g.setColor(Color.BLACK);
-         g.fillRect(undealtX, undealtY, Card.CARD_WIDTH, Card.CARD_HEIGHT);
-      }
-      else
-      {
-         undealt.peek().draw(g);
+         c.draw(g);
       }
    }
    

@@ -17,6 +17,7 @@ public class Solitaire
    private static Graphics g;
    private static Deck deck;
    private static Foundation[] foundationArray;
+   private static Button dealButton;
    
    public static void main(String[] args)
    {
@@ -76,6 +77,10 @@ public class Solitaire
             //c.draw(g);
          //}
       }
+      
+      dealButton = new Button(PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE - Button.BUTTON_HEIGHT, "Draw");
+      ButtonListener dealListener = new ButtonListener(dealButton, deck);
+      panel.addMouseListener(dealListener);
       
       drawScreen();
       
@@ -205,6 +210,7 @@ public class Solitaire
             c.draw(g);
          }
       }
+      dealButton.draw(g);
    }
    
    public static Foundation whichFoundationIsHit(int y)
@@ -219,4 +225,5 @@ public class Solitaire
       System.out.println("no foundation was hit");
       return null; 
    }
+   
 }
