@@ -11,6 +11,7 @@ public class CardListener extends MouseInputAdapter
    private static Card selectedCard;
    private Foundation[] foundations;
    private Pile[] piles;
+   private static boolean multipleSelected;
    
    public CardListener(ArrayList<Card> allCards, DrawingPanel p, Foundation[] foundationArray, Pile[] pileArray)
    {
@@ -19,6 +20,7 @@ public class CardListener extends MouseInputAdapter
       g = p.getGraphics();
       foundations = foundationArray;
       piles = pileArray;
+      multipleSelected = false;
    }
    
    public void mouseClicked(MouseEvent event)
@@ -34,7 +36,7 @@ public class CardListener extends MouseInputAdapter
             {
                if (somethingSelected)
                {
-                  if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.PILE))
+                  if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.PILE) && !multipleSelected)
                   {
                      //System.out.println(selectedCard.toString() + " has been selected first");
                      Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
@@ -63,7 +65,7 @@ public class CardListener extends MouseInputAdapter
                         //System.out.println("I recognize that the right things have happened. i tried.");
                      }
                   }
-                  else if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.FOUNDATION))
+                  else if (c.getLocation().equals(Card.Location.PILE) && selectedCard.getLocation().equals(Card.Location.FOUNDATION) && !multipleSelected)
                   {
                      Foundation foundationToLoseCard = Solitaire.whichFoundationIsHit(selectedCard.getY());
                      Pile pileToGainCard = Solitaire.whichPileIsHit(event.getX());
@@ -77,35 +79,86 @@ public class CardListener extends MouseInputAdapter
                         Solitaire.drawScreen();
                      }
                   }
-                  /**else if (c.getLocation().equals(Card.Location.FOUNDATION))
-                  {
-                  
-                  }**/
                   else if (c.getLocation().equals(Card.Location.DECK))
                   {
-                  
+                     //???????
                   }
-                  /**else
+                  else if (multipleSelected && c.getLocation().equals(Card.Location.PILE))
                   {
-                     System.out.println("something weird happened...");
-                  }**/
+                     Pile pileToLoseCards = Solitaire.whichPileIsHit(selectedCard.getX());
+                     Pile pileToGainCards = Solitaire.whichPileIsHit(event.getX());
+                     if (pileToGainCards.canAddCard(selectedCard) && pileToLoseCards != null)
+                     {
+                        ArrayList<Card> losingPileSeeable = pileToLoseCards.getSeeable();
+                        int index = losingPileSeeable.indexOf(selectedCard);
+                        ArrayList<Card> losingPileSeeableImmutable = (ArrayList<Card>) losingPileSeeable.clone();
+                        for (int cc = index; cc < losingPileSeeableImmutable.size(); cc++)
+                        {
+                           Card movingCard = losingPileSeeableImmutable.get(cc);
+                           movingCard.unselect();
+                           pileToLoseCards.removeLastCard();
+                           pileToGainCards.addCard(movingCard);
+                        }
+                        somethingSelected = false;
+                        multipleSelected = false;
+                        pileToLoseCards.flipLastCard(); //only will do something if necessary (hopefully)
+                        selectedCard = null;
+                        Solitaire.drawScreen();
+                     }
+                  }
                }
                else
                {
-                  c.select();
-                  somethingSelected = true;
-                  selectedCard = c;
-                  c.draw(g);
-                  //System.out.println(c.fullToString() + "asdf");
+                  if (c.isTopAt(c.getX(), c.getY() + Card.CARD_HEIGHT)) //top of pile or on foundation
+                  {
+                     c.select();
+                     somethingSelected = true;
+                     selectedCard = c;
+                     c.draw(g);
+                     //System.out.println(c.fullToString() + "asdf");
+                  }
+                  else //midstack of pile
+                  {
+                     somethingSelected = true;
+                     multipleSelected = true;
+                     selectedCard = c;
+                     Pile p = Solitaire.whichPileIsHit(c.getX());
+                     ArrayList<Card> allSeeable = p.getSeeable();
+                     int index = allSeeable.indexOf(c);
+                     for (int aa = index; aa < allSeeable.size(); aa++)
+                     {
+                        Card cardInStack = allSeeable.get(aa);
+                        cardInStack.select();
+                        cardInStack.draw(g);
+                     }
+                  }
                }
             }
             else
             {
-               c.unselect();
-               somethingSelected = false;
-               selectedCard = null;
-               c.draw(g);
-               //System.out.println(c.fullToString() + "fdsa");
+               if (!multipleSelected)
+               {
+                  c.unselect();
+                  somethingSelected = false;
+                  selectedCard = null;
+                  c.draw(g);
+                  //System.out.println(c.fullToString() + "fdsa");
+               }
+               else //multiple are selected
+               {
+                  somethingSelected = false;
+                  multipleSelected = false;
+                  Pile p = Solitaire.whichPileIsHit(selectedCard.getX());
+                  ArrayList<Card> allSeeable = p.getSeeable();
+                  int index = allSeeable.indexOf(selectedCard);
+                  for (int bb = index; bb < allSeeable.size(); bb++)
+                  {
+                     Card cardInStack = allSeeable.get(bb);
+                     cardInStack.unselect();
+                     cardInStack.draw(g);
+                  }
+                  selectedCard = null;
+               }
             }
             break;
          }
@@ -114,7 +167,7 @@ public class CardListener extends MouseInputAdapter
       }
       for (Foundation f : foundations)
       {
-         if (f.isHit(event.getX(), event.getY()) && somethingSelected && f.canAddCard(selectedCard))
+         if (f.isHit(event.getX(), event.getY()) && somethingSelected && f.canAddCard(selectedCard) && !multipleSelected)
          {
             if (selectedCard.getLocation().equals(Card.Location.PILE))
             {
@@ -122,7 +175,6 @@ public class CardListener extends MouseInputAdapter
                pileToLoseCard.removeLastCard();
                f.addCard(selectedCard);
                pileToLoseCard.flipLastCard();
-            //selectedCard = null;
             }
             else if (selectedCard.getLocation().equals(Card.Location.FOUNDATION))
             {
@@ -133,19 +185,40 @@ public class CardListener extends MouseInputAdapter
             //if you're adding an else case for the deck make sure this stuff still applies
             somethingSelected = false;
             selectedCard.unselect();
+            selectedCard = null;
             Solitaire.drawScreen();
          }
       }
-      for (Pile p : piles)
+      for (Pile p : piles) //clicking on empty pile, adding a king
       {
          if (p.isEmpty() && p.isHit(event.getX(), event.getY()) && somethingSelected && p.canAddCard(selectedCard))
          {
-            Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
-            pileToLoseCard.removeLastCard();
-            p.addCard(selectedCard);
-            pileToLoseCard.flipLastCard();
+            if (multipleSelected)
+            {
+               Pile pileToLoseCards = Solitaire.whichPileIsHit(selectedCard.getX());
+               ArrayList<Card> losingPileSeeable = pileToLoseCards.getSeeable();
+               int index = losingPileSeeable.indexOf(selectedCard);
+               ArrayList<Card> losingPileSeeableImmutable = (ArrayList<Card>) losingPileSeeable.clone();
+               for (int cc = index; cc < losingPileSeeableImmutable.size(); cc++)
+               {
+                  Card movingCard = losingPileSeeableImmutable.get(cc);
+                  movingCard.unselect();
+                  pileToLoseCards.removeLastCard();
+                  p.addCard(movingCard);
+               }
+               multipleSelected = false;
+               pileToLoseCards.flipLastCard();
+            }
+            else
+            {
+               Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
+               pileToLoseCard.removeLastCard();
+               p.addCard(selectedCard);
+               selectedCard.unselect();
+               pileToLoseCard.flipLastCard();
+            }
             somethingSelected = false;
-            selectedCard.unselect();
+            selectedCard = null;
             Solitaire.drawScreen();
          }
       }  
