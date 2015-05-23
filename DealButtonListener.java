@@ -1,12 +1,12 @@
 import javax.swing.event.*;
 import java.awt.event.*;
 
-public class ButtonListener extends MouseInputAdapter
+public class DealButtonListener extends MouseInputAdapter
 {
    private Button b;
    private Deck d;
    
-   public ButtonListener(Button b, Deck d)
+   public DealButtonListener(Button b, Deck d)
    {
       this.b = b;
       this.d = d;

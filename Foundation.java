@@ -21,7 +21,7 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    //if a King is added then all the other cards have been added correctly
    public boolean isComplete()
    {
-      if (cardList.get(cardList.size() - 1).getValue() == 13)
+      if (!cardList.isEmpty() && cardList.get(cardList.size() - 1).getValue() == 13)
          return true;
       return false;
    }

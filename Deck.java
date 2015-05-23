@@ -55,7 +55,7 @@ public class Deck
             else
             {
                int undealtCards = undealt.size();
-               for (int kk = 0; kk < undealtCards; kk++)
+               for (int kk = 1; kk <= undealtCards; kk++)
                {
                   Card movingCard = undealt.pop();
                   movingCard.setY(dealtY + (kk - 1) * Card.SMALL_SUIT_HEIGHT);

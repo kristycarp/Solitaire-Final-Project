@@ -7,9 +7,9 @@ public class CardListener extends MouseInputAdapter
 {
    private static boolean somethingSelected;
    private ArrayList<Card> cards;
-   private Graphics g;
+   private static Graphics g;
    private static Card selectedCard;
-   private Foundation[] foundations;
+   private static Foundation[] foundations;
    private Pile[] piles;
    private static boolean multipleSelected;
    private static Deck deck;
@@ -84,19 +84,6 @@ public class CardListener extends MouseInputAdapter
                            selectedCard = null;
                            Solitaire.drawScreen();
                         }
-                        int counter = 0; 
-                        for (Foundation f : foundations)
-                        {
-                           if (f.isComplete())
-                           {
-                              counter++;
-                           }
-                        }
-                        if (counter == 4)
-                        {
-                           win = true;
-                           win();
-                        }
                      }
                      else if (selectedCard.getLocation().equals(Card.Location.DECK) && c.getLocation().equals(Card.Location.PILE))
                      {
@@ -111,7 +98,7 @@ public class CardListener extends MouseInputAdapter
                            Solitaire.drawScreen();
                         }
                      }
-                     else if (selectedCard.getLocation().equals(Card.Location.DECK) && c.getLocation().equals(Card.Location.FOUNDATION))
+                     /**else if (selectedCard.getLocation().equals(Card.Location.DECK) && c.getLocation().equals(Card.Location.FOUNDATION))
                      {
                         Foundation foundationToGainCard = Solitaire.whichFoundationIsHit(event.getY());
                         if (foundationToGainCard.canAddCard(selectedCard))
@@ -123,7 +110,7 @@ public class CardListener extends MouseInputAdapter
                            selectedCard = null;
                            Solitaire.drawScreen();
                         }
-                     }
+                     }**/
                      else if (multipleSelected && c.getLocation().equals(Card.Location.PILE))
                      {
                         Pile pileToLoseCards = Solitaire.whichPileIsHit(selectedCard.getX());
@@ -233,14 +220,17 @@ public class CardListener extends MouseInputAdapter
                selectedCard.unselect();
                selectedCard = null;
                Solitaire.drawScreen();
+               checkForWin();
             }
          }
          for (Pile p : piles) //clicking on empty pile, adding a king
          {
             if (p.isEmpty() && p.isHit(event.getX(), event.getY()) && somethingSelected && p.canAddCard(selectedCard))
             {
+               //System.out.println("1111111111111");
                if (multipleSelected)
                {
+                  //System.out.println("2222222222222");
                   Pile pileToLoseCards = Solitaire.whichPileIsHit(selectedCard.getX());
                   ArrayList<Card> losingPileSeeable = pileToLoseCards.getSeeable();
                   int index = losingPileSeeable.indexOf(selectedCard);
@@ -257,6 +247,7 @@ public class CardListener extends MouseInputAdapter
                }
                else if (selectedCard.getLocation().equals(Card.Location.PILE))
                {
+                  //System.out.println("333333");
                   Pile pileToLoseCard = Solitaire.whichPileIsHit(selectedCard.getX());
                   pileToLoseCard.removeLastCard();
                   p.addCard(selectedCard);
@@ -265,6 +256,7 @@ public class CardListener extends MouseInputAdapter
                }
                else //deck
                {
+                  //System.out.println("4444");
                   deck.removeTop();
                   p.addCard(selectedCard);
                   selectedCard.unselect();
@@ -277,10 +269,38 @@ public class CardListener extends MouseInputAdapter
       }  
    }
    
-   public void win()
+   public static void win()
    {
       g.setFont(new Font("Segoe UI Light", Font.PLAIN, 100));
       g.setColor(Color.BLACK);
-      g.drawString("YOU WIN!!!!! :D", Solitaire.PANEL_WIDTH / 2, Solitaire.PANEL_HEIGHT / 2);
+      g.drawString("YOU WIN!!!!! :D", 50, 400);
+      win = true;
+   }
+   
+   public static boolean isWon()
+   {
+      return win;
+   }
+   
+   public static boolean somethingSelected()
+   {
+      return somethingSelected;
+   }
+   
+   public static void checkForWin()
+   {
+      int counter = 0; 
+      for (Foundation fo : foundations)
+      {
+         if (fo.isComplete())
+         {
+            counter++;
+         }
+      }
+      //System.out.println("check: counter = " + counter);
+      if (counter == 4)
+      {
+         win();
+      }
    }
 }

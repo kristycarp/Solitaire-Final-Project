@@ -274,7 +274,14 @@ public class Card extends Clickable //implements Comparable
                   break;
                }
             }
-            return top.equals(this);
+            if (top != null)
+            {
+               return top.equals(this);
+            }
+            else
+            {
+               return false;
+            }
          }
          else if (getLocation().equals(Location.FOUNDATION))
          {

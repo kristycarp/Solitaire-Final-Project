@@ -8,21 +8,75 @@ import java.io.*;
 
 public class Solitaire
 {
+   /**
+     *the width of the drawingpanel that contains all the graphics
+     */
    public static final int PANEL_WIDTH = 800;
+   
+   /**
+     *the height of the drawingpanel that contains all the graphics
+     */
    public static final int PANEL_HEIGHT = 600;
+   
+   /**
+     *the spacing constant. represents the pixels between each pile and foundation
+     */
    public static final int PILES_SPACE = 20;
-   //private static enum Piles {pile1, pile2, pile3, pile4, pile5, pile6, pile7}
+   
+   /**
+     *the array containing all the piles that will be created
+     */
    private static Pile[] pileArray;
+   
+   /**
+     *the background image of the drawingpanel
+     */
    private static BufferedImage background;
+   
+   /**
+     *the drawingpanel used
+     */
+   private static DrawingPanel panel;
+   
+   /**
+     *the graphics context for the drawingpanel
+     */
    private static Graphics g;
+   
+   /**
+     *the deck, containing all the cards that are not in a pile or a foundation
+     */
    private static Deck deck;
+   
+   /**
+     *the array containing all the foundations that will be created
+     */
    private static Foundation[] foundationArray;
+   
+   /**
+     *the button that, when pushed, triggers the deal function of the deck
+     */
    private static Button dealButton;
    
+   /**
+     *the button that, when pushed, moves all possible cards to the foundation
+     */
+   private static Button completeButton;
+   
+   /**
+     *the button that, when pushed, restarts the game
+     */
+   private static Button restartButton;
+   
+   /**
+     *the main method, where the program begins
+     *
+     *@param args
+     */
    public static void main(String[] args)
    {
       
-      DrawingPanel panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
+      panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
       g = panel.getGraphics();
       try
       {
@@ -32,87 +86,39 @@ public class Solitaire
       {
          System.out.println("Problem loading background image");
       }
-      //g.drawImage(background, 0, 0, null);
-      //panel.setBackground(Color.BLUE);
-
-      pileArray = new Pile[7];
-      for (int ii = 1; ii <= 7; ii++)
-      {
-         pileArray[ii - 1] = makePile(ii);
-         //pileArray[ii - 1].draw(g);
-      }
       
-      foundationArray = new Foundation[4];
-      for (int jj = 1; jj <= 4; jj++)
-      {
-         foundationArray[jj - 1] = makeFoundation(jj);
-         //foundationArray[jj - 1].draw(g);
-      }
-      //FoundationListener fListener = new FoundationListener(); 
-      //panel.addMouseListener(fListener);
-      
-      //frame.setVisible(true);
-      
-      ArrayList<Card> deck52 = tempGenerateAndShuffle();
-      ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
-      deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
-      CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray, deck);
-      panel.addMouseListener(cListener);
-      //deck.draw(g);
-      
-      for (Pile p : pileArray)
-      {
-         p.flipLastCard();
-         //for (Card c : p.allCardsInPile())
-         //{
-            //c.draw(g);
-         //}
-      }
-      
-      dealButton = new Button(PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE - Button.BUTTON_HEIGHT, "Draw");
-      ButtonListener dealListener = new ButtonListener(dealButton, deck);
-      panel.addMouseListener(dealListener);
-      
-      drawScreen();
-      
-      //for testing only
-      /**for (int ii = 0; ii < 7; ii++)
-      {
-         System.out.println("Pile " + (ii + 1) + ": " + pileArray[ii].toString());
-      }
-      System.out.println("Deck: " + deck.toString());**/
-      
-      //for testing only
-      /**Card testCard = new Card(Card.Suit.Diamonds, 2, 500, 500);
-      testCard.draw(g);**/
+      setup();
    }
    
+   /**
+     *this method creates a pile. It uses an integer parameter to determine where the pile should go
+     *
+     *@param i - the integer that helps with spacing all seven piles
+     *@return the pile that was created
+     */
    public static Pile makePile(int i)
    {
-      return (new Pile(i * (Card.CARD_WIDTH + PILES_SPACE) + 2 * PILES_SPACE, 10));
+      return (new Pile(i * (Card.CARD_WIDTH + PILES_SPACE) + 2 * PILES_SPACE, Pile.PILE_Y));
    }
    
+   /**
+     *creates a foundation, given an integer parameter for spacing purposes
+     *
+     *@param i - the integer that helps with spacing all four foundations
+     *@return the foundation that was created
+     */
    public static Foundation makeFoundation(int i)
    {
       return (new Foundation(PANEL_WIDTH - Card.CARD_WIDTH - PILES_SPACE, i * (Card.CARD_HEIGHT + PILES_SPACE) + 10));
    }
    
+   /**
+     *creates a new deck with all 52 cards in a standard deck, then uses DeckShuffler (from the poker
+     *lab, but written by me) to shuffle it. Returns the shuffled deck as an ArrayList of Cards.
+     *
+     *@return realDeck - the shuffled deck, as an ArrayList of Cards
+     */
    public static ArrayList<Card> generateAndShuffle()
-   {
-      ArrayList<Card> deck = new ArrayList<Card>(52);
-      for (Card.Suit s : Card.Suit.values())
-      {
-         for (int value = 1; value <= 13; value++)
-         {
-            deck.add(new Card(s, value, 0, 0));
-         }
-      }
-      //add shuffling here
-      //System.out.println(deck.toString());
-      return deck;
-   }
-   
-   public static ArrayList<Card> tempGenerateAndShuffle()
    {
       Card[] deck = new Card[52];
       int ii = 0;
@@ -124,8 +130,7 @@ public class Solitaire
             ii++;
          }
       }
-      //add shuffling here
-      DeckShuffler.shuffle(deck, 52);
+      DeckShuffler.shuffle(deck, 52); //DeckShuffler not written by me--from the poker lab
       ArrayList<Card> realDeck = new ArrayList<Card>(52);
       for (Card c : deck)
       {
@@ -144,23 +149,35 @@ public class Solitaire
       return realDeck;
    }
    
-   //returns remaining deck
+   /**
+     *this method takes the deck and deals out cards to all the piles. It then returns the remaining
+     *deck, which will become the actual starting deck of the game.
+     *
+     *@param deck - the deck containing all 52 cards, usually will also be shuffled
+     *@param pileArray - an array containing all the piles. This method will deal cards to each of the
+     *piles in this array
+     */
    public static ArrayList<Card> dealToPiles(ArrayList<Card> deck, Pile[] pileArray)
    {
-      //int dealt = 0;
       for (int nPilesToDeal = 7; nPilesToDeal > 0; nPilesToDeal--)
       {
          for (int nCardsDealt = 1; nCardsDealt <= nPilesToDeal; nCardsDealt++)
          {
             pileArray[nCardsDealt - 1].dealCard(deck.remove(0));
-            //dealt++;
-            //System.out.println(dealt);
          }
       }
-      
       return deck;
    }
    
+   /**
+     *this method goes through all the piles that have been created and checks to see if a given
+     *x coordinate is inside any of them. It returns the pile that contains the x coordinate, or, if
+     *there is no such pile, null. The reason why only an x coordinate is needed to identify a pile is
+     *due to the fact that all piles have the same top y coordinate (since they're in a row)
+     *
+     *@param x - the x coordinate which is being checked for being inside a pile
+     *@return either the pile that has the given x coordinate or null
+     */
    public static Pile whichPileIsHit(int x)
    {
       for (Pile p : pileArray)
@@ -174,8 +191,12 @@ public class Solitaire
       return null; 
    }
    
-   public static void drawScreen()
-   {
+   /**
+     *This method clears the screen, then draws the screen background, then draws all the objects on the
+     *screen. It does this by calling the draw method for each object.
+     */
+   public static void drawScreen() //NOTE TO SELF: MAKE THIS MORE EFFICIENT? MAKE A LIST WITH DRAWABLE THINGS
+   {                               //AND LIKE GO THROUGH ALL CLICKABLES AND DRAW THEM LIKE THAT???
       g.setColor(Color.WHITE);
       g.drawRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
       g.drawImage(background, 0, 0, null);
@@ -202,8 +223,18 @@ public class Solitaire
          }
       }
       dealButton.draw(g);
+      completeButton.draw(g);
+      restartButton.draw(g);
    }
    
+   /**
+     *this method uses the array of foundations to find which foundation, if any, was hit by something.
+     *It only takes a y parameter because all foundations have the same x value. If no foundation was
+     *hit, this method returns null. It is assumed that this will not happen frequently because this method
+     *should only be called when some foundation is hit, and the program needs to know which one is hit.
+     *
+     *@param y - the y coordinate of the click or the card that is being checked
+     */
    public static Foundation whichFoundationIsHit(int y)
    {
       for (Foundation f : foundationArray)
@@ -217,9 +248,58 @@ public class Solitaire
       return null; 
    }
    
+   /**
+     *this method returns the current deck that is being used
+     *
+     *@return deck - the deck
+     */
    public static Deck getDeck()
    {
       return deck;
+   }
+   
+   /**
+     *this method sets up all the necessary objects and variables to begin a new game.
+     *Called in the beginning of the game and whenever the restart button is clicked.
+     */
+   public static void setup()
+   {
+      pileArray = new Pile[7];
+      for (int ii = 1; ii <= 7; ii++)
+      {
+         pileArray[ii - 1] = makePile(ii);
+      }
+      
+      foundationArray = new Foundation[4];
+      for (int jj = 1; jj <= 4; jj++)
+      {
+         foundationArray[jj - 1] = makeFoundation(jj);
+      }
+
+      ArrayList<Card> deck52 = generateAndShuffle();
+      ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
+      deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
+      CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray, deck);
+      panel.addMouseListener(cListener);
+      
+      for (Pile p : pileArray)
+      {
+         p.flipLastCard();
+      }
+      
+      dealButton = new Button(PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE - Button.BUTTON_HEIGHT, "Draw");
+      DealButtonListener dealListener = new DealButtonListener(dealButton, deck);
+      panel.addMouseListener(dealListener);
+      
+      completeButton = new Button(PILES_SPACE, PANEL_HEIGHT - Button.BUTTON_HEIGHT - PILES_SPACE, "Move");
+      CompleteButtonListener completeListener = new CompleteButtonListener(completeButton, permaDeck, foundationArray);
+      panel.addMouseListener(completeListener);
+      
+      restartButton = new Button(PANEL_WIDTH - Button.BUTTON_WIDTH - PILES_SPACE, PILES_SPACE, "Restart");
+      RestartButtonListener restartListener = new RestartButtonListener(restartButton);
+      panel.addMouseListener(restartListener);
+      
+      drawScreen();
    }
    
 }
