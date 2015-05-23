@@ -74,6 +74,11 @@ public class Solitaire
    public static final String fontName = "Segoe UI Light";
    
    /**
+     *the y coordinate of the tops of all piles
+     */
+   public static int PILE_Y = 10;
+   
+   /**
      *the main method, where the program begins
      *
      *@param args
@@ -103,7 +108,7 @@ public class Solitaire
      */
    public static Pile makePile(int i)
    {
-      return (new Pile(i * (Card.CARD_WIDTH + PILES_SPACE) + 2 * PILES_SPACE, Pile.PILE_Y));
+      return (new Pile(i * (Card.CARD_WIDTH + PILES_SPACE) + 2 * PILES_SPACE, PILE_Y));
    }
    
    /**

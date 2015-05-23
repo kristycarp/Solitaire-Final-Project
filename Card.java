@@ -88,6 +88,7 @@ public class Card extends Clickable
      */
    public Card(Suit s, int v, int x, int y)
    {
+      super(x, y);
       if (v < 1 || v > 13)
          throw new IllegalArgumentException();
       suit = s;
@@ -109,8 +110,6 @@ public class Card extends Clickable
          color = Color.RED;
       }
       value = v;
-      this.x = x;
-      this.y = y;
       
       try
       {
