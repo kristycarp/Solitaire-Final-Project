@@ -271,7 +271,7 @@ public class CardListener extends MouseInputAdapter
    
    public static void win()
    {
-      g.setFont(new Font("Segoe UI Light", Font.PLAIN, 100));
+      g.setFont(new Font(Solitaire.fontName, Font.PLAIN, 100));
       g.setColor(Color.BLACK);
       g.drawString("YOU WIN!!!!! :D", 50, 400);
       win = true;

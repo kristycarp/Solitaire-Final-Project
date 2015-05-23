@@ -69,6 +69,11 @@ public class Solitaire
    private static Button restartButton;
    
    /**
+     *the name of the font that is used on the cards and when the user wins
+     */
+   public static final String fontName = "Segoe UI Light";
+   
+   /**
      *the main method, where the program begins
      *
      *@param args
