@@ -1,3 +1,8 @@
+//Kristy Carpenter, Computer Science III, String 2015, Section B (5th period)
+//Final project--Solitaire
+//
+//This class contains all the information for each card in the Solitaire game.
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -122,7 +127,7 @@ public class Card extends Clickable
       
       try
       {
-         backside = ImageIO.read(new File("cardback1.png"));
+         backside = ImageIO.read(new File("cardback3.png"));
       }
       catch (IOException e)
       {
@@ -320,7 +325,7 @@ public class Card extends Clickable
    public String fullToString()
    {
       String string = toString();
-      string += ", face up: " + faceUp + ", location: (" + x + ", " + y + "), selected: " + selected;
+      string += ", face up: " + faceUp + ", location: " + location + ", selected: " + selected;
       return string;
    }
    

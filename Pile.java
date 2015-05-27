@@ -1,3 +1,14 @@
+//Kristy Carpenter, Computer Science III, String 2015, Section B (5th period)
+//Final project--Solitaire
+//
+//This class contains all the information for each Pile in the game. The Piles are at the top of the
+//screen and start out with all cards except the topmost face down. The user can move cards from a pile
+//to a foundation, from the deck to a pile, or from one pile to another. A card may only be placed on a Pile
+//if it fits one of the two following scenarios: 1) the Pile is empty and the card is a King; 2) the card
+//is the opposite color of the topmost card of the Pile AND has a value that is one lower than the topmost
+//card of the Pile. Multiple cards may only be moved if they originate from a Pile and are being moved
+//to another Pile.
+
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
@@ -51,6 +62,14 @@ public class Pile extends Clickable
    {
       g.setColor(Color.BLACK);
       g.fillRect(x, y, Card.CARD_WIDTH, Card.CARD_HEIGHT);
+      for (Card c : unseenCardList)
+      {
+         c.draw(g);
+      }
+      for (Card c : seeableCardList)
+      {
+         c.draw(g);
+      }
    }
    
    /**

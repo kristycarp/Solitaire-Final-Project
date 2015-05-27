@@ -1,7 +1,17 @@
+//Kristy Carpenter, Computer Science III, String 2015, Section B (5th period)
+//Final project--Solitaire
+//
+//This class contains all the information for a Foundation. A Foundation is the Pile on the right part
+//of the screen, and begins the game with no cards. The game is won when every Foundation is complete.
+//Empty Foundations can receive an Ace of any suit. The suit of this Ace determines the suit of the
+//Foundation. After the Ace is added, cards may only be added if their suit matches the suit of the
+//Foundation AND their value is one greater than the topmost card of the Foundation. The topmost card
+//of the Foundation can be moved to another Foundation or a Pile if it is legal.
+
 import java.util.*;
 import java.awt.*;
 
-public class Foundation extends Pile //referred to as DonePile in design doc
+public class Foundation extends Clickable //referred to as DonePile in design doc
 {
    /**
      *the designated suit for this foundation. set only when the first card (ace) is moved to this foundation
@@ -129,5 +139,21 @@ public class Foundation extends Pile //referred to as DonePile in design doc
    public int getY()
    {
       return y;
+   }
+   
+   /**
+     *draws this foundation and its contents on the panel
+     *
+     *@param g - the graphics context for the panel onto which the foundation will be drawn
+     */
+   public void draw(Graphics g)
+   {
+      g.setColor(Color.BLACK);
+      g.fillRect(x, y, Card.CARD_WIDTH, Card.CARD_HEIGHT);
+      for (Card c : cardList)
+      {
+         c.draw(g);
+      }
+
    }
 }

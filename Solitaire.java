@@ -1,3 +1,9 @@
+//Kristy Carpenter, Computer Science III, String 2015, Section B (5th period)
+//Final project--Solitaire
+//
+//This is the class that contains the main method for the Solitaire program. It creates all the necessary
+//objects and sets up the game.
+
 import javax.swing.*; //for gui components
 import java.awt.*;
 import java.util.*;
@@ -79,6 +85,31 @@ public class Solitaire
    public static int PILE_Y = 10;
    
    /**
+     *the number of piles to create
+     */
+   private static final int NUM_PILES = 7;
+   
+   /**
+     *the number of cards in a suit
+     */
+   private static final int NUM_CARDS_IN_SUIT = 13;
+   
+   /**
+     *the number of different suits
+     */
+   private static final int NUM_SUITS = 4;
+   
+   /**
+     *the total number of cards in the full deck
+     */
+   private static final int NUM_CARDS = NUM_CARDS_IN_SUIT * NUM_SUITS;
+   
+   /**
+     *a list of all the clickable things
+     */
+   private static ArrayList<Clickable> allClickables;
+   
+   /**
      *the main method, where the program begins
      *
      *@param args
@@ -130,18 +161,18 @@ public class Solitaire
      */
    public static ArrayList<Card> generateAndShuffle()
    {
-      Card[] deck = new Card[52];
+      Card[] deck = new Card[NUM_CARDS];
       int ii = 0;
       for (Card.Suit s : Card.Suit.values())
       {
-         for (int value = 1; value <= 13; value++)
+         for (int value = 1; value <= NUM_CARDS_IN_SUIT; value++)
          {
             deck[ii] = new Card(s, value, 0, 0);
             ii++;
          }
       }
-      DeckShuffler.shuffle(deck, 52); //DeckShuffler not written by me--from the poker lab
-      ArrayList<Card> realDeck = new ArrayList<Card>(52);
+      DeckShuffler.shuffle(deck, NUM_CARDS); //DeckShuffler not written by me--from the poker lab
+      ArrayList<Card> realDeck = new ArrayList<Card>(NUM_CARDS);
       for (Card c : deck)
       {
          realDeck.add(c);
@@ -169,7 +200,7 @@ public class Solitaire
      */
    public static ArrayList<Card> dealToPiles(ArrayList<Card> deck, Pile[] pileArray)
    {
-      for (int nPilesToDeal = 7; nPilesToDeal > 0; nPilesToDeal--)
+      for (int nPilesToDeal = NUM_PILES; nPilesToDeal > 0; nPilesToDeal--)
       {
          for (int nCardsDealt = 1; nCardsDealt <= nPilesToDeal; nCardsDealt++)
          {
@@ -205,36 +236,15 @@ public class Solitaire
      *This method clears the screen, then draws the screen background, then draws all the objects on the
      *screen. It does this by calling the draw method for each object.
      */
-   public static void drawScreen() //NOTE TO SELF: MAKE THIS MORE EFFICIENT? MAKE A LIST WITH DRAWABLE THINGS
-   {                               //AND LIKE GO THROUGH ALL CLICKABLES AND DRAW THEM LIKE THAT???
+   public static void drawScreen()
+   {                             
       g.setColor(Color.WHITE);
       g.drawRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
       g.drawImage(background, 0, 0, null);
-      for (Pile p : pileArray)
+      for (Clickable c : allClickables)
       {
-         p.draw(g);
-         for (Card c : p.getUnseen())
-         {
-            c.draw(g);
-         }
-         for (Card c : p.getSeeable())
-         {
-            c.draw(g);
-         }
-         //System.out.println(p.toString());
-      } 
-      deck.draw(g);
-      for (Foundation f : foundationArray)
-      {
-         f.draw(g);
-         for (Card c : f.getCards())
-         {
-            c.draw(g);
-         }
+         c.draw(g);
       }
-      dealButton.draw(g);
-      completeButton.draw(g);
-      restartButton.draw(g);
    }
    
    /**
@@ -274,21 +284,25 @@ public class Solitaire
      */
    public static void setup()
    {
-      pileArray = new Pile[7];
-      for (int ii = 1; ii <= 7; ii++)
+      allClickables = new ArrayList<Clickable>();
+      pileArray = new Pile[NUM_PILES];
+      for (int ii = 1; ii <= NUM_PILES; ii++)
       {
          pileArray[ii - 1] = makePile(ii);
+         allClickables.add(pileArray[ii-1]);
       }
       
-      foundationArray = new Foundation[4];
-      for (int jj = 1; jj <= 4; jj++)
+      foundationArray = new Foundation[NUM_SUITS];
+      for (int jj = 1; jj <= NUM_SUITS; jj++)
       {
          foundationArray[jj - 1] = makeFoundation(jj);
+         allClickables.add(foundationArray[jj-1]);
       }
 
       ArrayList<Card> deck52 = generateAndShuffle();
       ArrayList<Card> permaDeck = (ArrayList<Card>) deck52.clone();
       deck = new Deck(dealToPiles(deck52, pileArray), PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE + 10);
+      allClickables.add(deck);
       CardListener cListener = new CardListener(permaDeck, panel, foundationArray, pileArray, deck);
       panel.addMouseListener(cListener);
       
@@ -300,14 +314,17 @@ public class Solitaire
       dealButton = new Button(PILES_SPACE, Card.CARD_HEIGHT + PILES_SPACE - Button.BUTTON_HEIGHT, "Draw");
       DealButtonListener dealListener = new DealButtonListener(dealButton, deck);
       panel.addMouseListener(dealListener);
+      allClickables.add(dealButton);
       
       completeButton = new Button(PILES_SPACE, PANEL_HEIGHT - Button.BUTTON_HEIGHT - PILES_SPACE, "Move");
       CompleteButtonListener completeListener = new CompleteButtonListener(completeButton, permaDeck, foundationArray);
       panel.addMouseListener(completeListener);
+      allClickables.add(completeButton);
       
-      restartButton = new Button(PANEL_WIDTH - Button.BUTTON_WIDTH - PILES_SPACE, PILES_SPACE, "Restart");
-      RestartButtonListener restartListener = new RestartButtonListener(restartButton);
+      /**restartButton = new Button(PANEL_WIDTH - Button.BUTTON_WIDTH - PILES_SPACE, PILES_SPACE, "Restart");
+      RestartButtonListener restartListener = new RestartButtonListener(restartButton, permaDeck);
       panel.addMouseListener(restartListener);
+      allClickables.add(restartButton);**/
       
       drawScreen();
    }

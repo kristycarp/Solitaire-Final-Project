@@ -1,7 +1,15 @@
+//Kristy Carpenter, Computer Science III, String 2015, Section B (5th period)
+//Final project--Solitaire
+//
+//This class contains all the information for the Deck used in the game. If the deal button is clicked,
+//three cards (or fewer of there are less than three left) are dealt out from the deck and are now
+//faceup. Only three cards at most can be seen and faceup at a time. All other cards are either facedown
+//and undealt, or faceup but covered up by the 1-3 most recently dealt cards.
+
 import java.util.*;
 import java.awt.*;
 
-public class Deck
+public class Deck extends Clickable
 {
    /**
      *contains all the cards in the deck, regardless of whether they are face up or down
